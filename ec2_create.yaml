@@ -1,0 +1,22 @@
+---
+- hosts: localhost
+  connection: local
+  tasks:
+  - name: start an instance with a public IP address
+    amazon.aws.ec2_instance:
+      name: "{{ item.name }}"
+      key_name: "chabi"
+      instance_type: t2.micro
+      security_group: default
+      region: ap-south-1
+      aws_access_key: "{{ ec2_access_key }}"
+      aws_secret_key: "{{ ec2_secret_key }}"
+      network_interfaces:
+        - assign_public_ip: true
+      image_id: "{{ item.image }}"
+      tags:
+        Environment: "{{ item.name }}"
+    loop:
+      - { image: "ami-0fd05997b4dff7aac", name: "amazon_linux" }
+      - { image: "ami-053b12d3152c0cc71", name: "ubuntu-1" }
+      - { image: "ami-053b12d3152c0cc71", name: "ubuntu-2" }
